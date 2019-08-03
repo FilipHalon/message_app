@@ -1,15 +1,13 @@
-from psycopg2 import connect, DatabaseError
-from connection_info import connection_info
+# from psycopg2 import connect, DatabaseError
+# from connection_info import connection_info
+from models import User
 
 
 def create_tables():
 
-    pass
-    # try:
-    #     conn = connect(**connection_info)
-    #     cur = conn.cursor()
-    #
-    #     for cls in []:
-    #         cls.create_table()
-    #
-    #
+    for cls in [User]:
+        cls.create_table()
+
+
+if __name__ == '__main__':
+    create_tables()
