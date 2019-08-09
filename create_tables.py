@@ -1,11 +1,9 @@
-# from psycopg2 import connect, DatabaseError
-# from connection_info import connection_info
-from models import User
+from models import User, Message
 
 
 def create_tables():
 
-    for cls in [User]:
+    for cls in [Message]:
         cls.create_table()
 
 
