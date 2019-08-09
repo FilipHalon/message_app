@@ -3,7 +3,7 @@ from models import User, Message
 
 def create_tables():
 
-    for cls in [Message]:
+    for cls in [User, Message]:
         cls.create_table()
 
 

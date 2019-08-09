@@ -1,5 +1,5 @@
 from get_connection import get_connection, execute_query
-from hash_password import password_hash
+from hash_password import generate_salt, password_hash
 from time import strftime
 
 
@@ -37,7 +37,7 @@ class User(object):
     def get_password(self):
         return self.__hashed_password
 
-    def set_password(self, password, salt):
+    def set_password(self, password, salt=generate_salt()):
         self.__hashed_password = password_hash(password, salt)
 
     def save(self):
@@ -219,5 +219,4 @@ class Message(object):
 
 if __name__ == '__main__':
 
-    m = Message().load(text='w')
-    print(m)
+    pass
