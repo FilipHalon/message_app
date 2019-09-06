@@ -6,7 +6,11 @@ from console_functions import check_user_and_password
 def create_parser_message():
 
     parser = argparse.ArgumentParser(
-        description='Select a proper set of options for the program to proceed.')
+        description="""Select a proper set of options for the program to proceed.
+                       To display all the messages by a user, please input the username (after -u) 
+                       and the password (after -p) of that user as well as -l.
+                       To send the message, please input your username (after -u), password (after -p) and specify
+                       who you wish to send the message to (after -t) and write the text of the message (after -s)""")
     parser.add_argument(
         '-u', '--username',
         help='Username input.')
@@ -32,25 +36,34 @@ if __name__ == '__main__':
     user = check_user_and_password(args.username, args.password)
 
     if args.list and not args.to and not args.send:
-        print(Message.load(from_id=user.id))
+
+        message_list = Message.load(from_id=user._User__id)
+        to_display = []
+        for message in message_list:
+            to_display_msg = [User.load(id=message[1]).name, User.load(id=message[2]).name, message[3], str(message[4])]
+            to_display.append(to_display_msg)
+
+        print(to_display)
         # it might be necessary to check the dates and order by them
 
-    elif args.list and args.to or args.send:
+    elif args.list and (args.to or args.send):
         print("You used an incorrect set of arguments.")
 
     elif not args.list and args.to and args.send:
-        if User.load(id=args.to):
-            message = Message()
-            message.from_id = user.id
-            message.to_id = args.to
-            message.text = args.send
-            message.save()
-        else:
-            print("The user you are trying to send the message to does not exist in the database.")
 
-    elif not args.list and args.to and not args.send:
-        print("You did not specify the user you wish send the message to.")
+        to_user = User.load(name=args.to)
+        if len(to_user) == 0:
+            raise Exception("The user you are trying to send the message to does not exist in the database.")
+
+        message = Message()
+        message.from_id = user._User__id
+        message.to_id = to_user[0][0]
+        message.text = args.send
+        message.save()
 
     elif not args.list and not args.to and args.send:
+        print("You did not specify the user you wish send the message to.")
+
+    elif not args.list and args.to and not args.send:
         print("You did not write the message.")
 

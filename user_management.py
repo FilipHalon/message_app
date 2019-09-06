@@ -6,7 +6,13 @@ from console_functions import check_user_and_password
 def create_parser_user():
 
     parser = argparse.ArgumentParser(
-        description='Select a proper set of options for the program to proceed.')
+        description="""Select a proper set of options for the program to proceed.
+                       To add a new user, please input a username (after -u) and a password (after -p).
+                       To change the password of a user, please input the username (after -u) and the password (after -p)
+                       of the user whose password you wish to change, the new password (after -n) and -e.
+                       To delete a user, please input the username (after -u) and the password (after -p) of the user
+                       you wish to delete from the database, and -d.
+                       To display all the users in the database, please input -l.""")
     parser.add_argument(
         '-u', '--username',
         help='Username input.')
@@ -43,15 +49,15 @@ if __name__ == '__main__':
             raise Exception("This user already exists.")
 
     elif args.username and args.password and args.new_pass and not args.list and not args.delete and args.edit:
-        user = check_user_and_password()
-        user.set_password(args.password)
+        user = check_user_and_password(args.username, args.password)
+        user.set_password(args.new_pass)
         user.save()
 
     elif args.username and args.password and not args.new_pass and not args.list and args.delete and not args.edit:
-        user = check_user_and_password()
+        user = check_user_and_password(args.username, args.password)
         user.delete()
 
-    elif not args.username and not args.password and not args.new_pass and args.list and args.delete and not args.edit:
+    elif not args.username and not args.password and not args.new_pass and args.list and not args.delete and not args.edit:
         user_list = User.load()
         for user in user_list:
             print(f"{user[0]} {user[1]} {user[2]}")
